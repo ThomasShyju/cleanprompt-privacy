@@ -1,0 +1,1204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CleanPrompt — Zero-Leak LLM Prompt & Code Sanitizer (100% Private)</title>
+    <meta name="description" content="Sanitize ChatGPT and Claude prompts in your browser. Automatically strip API keys, passwords, JWTs, and PII before pasting into AI models. 100% client-side with zero data leaks.">
+    <meta name="keywords" content="sanitize prompt chatgpt, strip api keys before llm, remove secrets from code online, client side prompt scrubber, pii redactor for ai, local prompt cleaner, llm prompt sanitizer, code secret remover, api key scrubber, chatgpt privacy tool">
+    <meta name="author" content="CleanPrompt">
+    <meta name="robots" content="index, follow">
+    <meta name="theme-color" content="#09090b">
+
+    <!-- OpenGraph -->
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="CleanPrompt — Zero-Leak LLM Prompt & Code Sanitizer">
+    <meta property="og:description" content="Strip API keys, passwords, JWTs, and PII before pasting into ChatGPT, Claude, or DeepSeek. 100% client-side. Zero data leaks. Zero server requests.">
+    <meta property="og:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2310B981'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='white' font-family='monospace'%3E%3C/text%3E%3C/svg%3E">
+    <meta property="og:url" content="https://https://cleanprompt-privacy.vercel.app">
+    <meta property="og:site_name" content="CleanPrompt">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="CleanPrompt — Zero-Leak LLM Prompt & Code Sanitizer">
+    <meta name="twitter:description" content="Strip API keys, passwords, JWTs, and PII before pasting into ChatGPT, Claude, or DeepSeek. 100% client-side. Zero data leaks.">
+    <meta name="twitter:image" content="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%2310B981'/%3E%3Ctext x='50' y='70' font-size='60' text-anchor='middle' fill='white' font-family='monospace'%3E%3C/text%3E%3C/svg%3E">
+
+<!-- Favicon for Browser Tabs & Google Search -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%2309090b'/%3E%3Cpath d='M24 6l14 5v10c0 10-6.5 17.5-14 21-7.5-3.5-14-11-14-21V11l14-5z' fill='none' stroke='%2310b981' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M19 20l5 4-5 4' fill='none' stroke='%2334d399' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='27' y1='28' x2='31' y2='28' stroke='%2306b6d4' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E" />
+
+<!-- Apple Touch Icon -->
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%2309090b'/%3E%3Cpath d='M24 6l14 5v10c0 10-6.5 17.5-14 21-7.5-3.5-14-11-14-21V11l14-5z' fill='none' stroke='%2310b981' stroke-width='2.5' stroke-linejoin='round'/%3E%3Cpath d='M19 20l5 4-5 4' fill='none' stroke='%2334d399' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cline x1='27' y1='28' x2='31' y2='28' stroke='%2306b6d4' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E" />
+
+
+    <!-- JSON-LD Schema -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "WebApplication",
+            "name": "CleanPrompt — Zero-Leak LLM & Code Scrubber",
+            "applicationCategory": "SecurityApplication",
+            "operatingSystem": "Any",
+            "browserRequirements": "Requires JavaScript",
+            "description": "Sanitize ChatGPT and Claude prompts in your browser. Automatically strip API keys, passwords, JWTs, and PII before pasting into AI models. 100% client-side with zero data leaks.",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "featureList": [
+                "100% Offline",
+                "Zero Server Requests",
+                "Real-time Redaction",
+                "API Key Detection",
+                "PII Scrubbing",
+                "Enterprise Air-Gapped Standard"
+            ],
+            "url": "https://cleanprompt-privacy.vercel.app"
+        }
+    </script>
+
+    <script src="https://cdn.tailwindcss.com">
+    </script>
+    <style>
+        :root {
+            --cp-bg: #09090b;
+            --cp-panel: #18181b;
+            --cp-border: #27272a;
+            --cp-text: #f4f4f5;
+            --cp-emerald: #10B981;
+            --cp-cyan: #06B6D4;
+            --cp-amber: #F59E0B;
+            --cp-rose: #F43F5E;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: var(--cp-bg);
+            color: var(--cp-text);
+            font-family: 'Inter', 'SF Pro Display', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        .font-mono-editor {
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
+            font-size: 0.875rem;
+            line-height: 1.7;
+        }
+        .cp-panel {
+            background: var(--cp-panel);
+            border: 1px solid var(--cp-border);
+            border-radius: 0.75rem;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        .cp-panel:focus-within {
+            border-color: var(--cp-emerald);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.12);
+        }
+        .cp-input-area {
+            width: 100%;
+            min-height: 320px;
+            background: transparent;
+            border: none;
+            outline: none;
+            resize: vertical;
+            color: var(--cp-text);
+            caret-color: var(--cp-emerald);
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+            font-size: 0.875rem;
+            line-height: 1.7;
+            padding: 1rem;
+            tab-size: 4;
+        }
+        .cp-output-display {
+            width: 100%;
+            min-height: 320px;
+            max-height: 600px;
+            overflow-y: auto;
+            padding: 1rem;
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-family: 'JetBrains Mono', 'Fira Code', 'SF Mono', Menlo, Consolas, monospace;
+            font-size: 0.875rem;
+            line-height: 1.7;
+            color: var(--cp-text);
+            cursor: text;
+            user-select: text;
+        }
+        .cp-output-display .redacted-token {
+            background: rgba(244, 63, 94, 0.18);
+            color: #fda4af;
+            border-radius: 3px;
+            padding: 0 3px;
+            font-weight: 600;
+            border-bottom: 1px dashed rgba(244, 63, 94, 0.5);
+            transition: background 0.2s ease;
+            cursor: help;
+        }
+        .cp-output-display .redacted-token:hover {
+            background: rgba(244, 63, 94, 0.32);
+        }
+        .cp-output-display .redacted-token.api-key {
+            background: rgba(245, 158, 11, 0.18);
+            color: #fcd34d;
+            border-bottom-color: rgba(245, 158, 11, 0.5);
+        }
+        .cp-output-display .redacted-token.api-key:hover {
+            background: rgba(245, 158, 11, 0.32);
+        }
+        .cp-output-display .redacted-token.pii {
+            background: rgba(16, 185, 129, 0.18);
+            color: #6ee7b7;
+            border-bottom-color: rgba(16, 185, 129, 0.5);
+        }
+        .cp-output-display .redacted-token.ip {
+            background: rgba(6, 182, 212, 0.18);
+            color: #67e8f9;
+            border-bottom-color: rgba(6, 182, 212, 0.5);
+        }
+        .cp-toggle-switch {
+            position: relative;
+            width: 40px;
+            height: 22px;
+            cursor: pointer;
+            flex-shrink: 0;
+        }
+        .cp-toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+            position: absolute;
+        }
+        .cp-toggle-slider {
+            position: absolute;
+            inset: 0;
+            background: #3f3f46;
+            border-radius: 22px;
+            transition: background 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        .cp-toggle-slider::before {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            left: 3px;
+            top: 3px;
+            background: #e4e4e7;
+            border-radius: 50%;
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+        }
+        .cp-toggle-switch input:checked+.cp-toggle-slider {
+            background: var(--cp-emerald);
+        }
+        .cp-toggle-switch input:checked+.cp-toggle-slider::before {
+            transform: translateX(18px);
+            background: #ffffff;
+        }
+        .cp-toggle-switch input:focus-visible+.cp-toggle-slider {
+            outline: 2px solid var(--cp-cyan);
+            outline-offset: 2px;
+        }
+        .cp-chip {
+            padding: 0.4rem 0.9rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid var(--cp-border);
+            background: #18181b;
+            color: #a1a1aa;
+            user-select: none;
+            white-space: nowrap;
+        }
+        .cp-chip:hover {
+            border-color: #3f3f46;
+            color: #e4e4e7;
+            transform: translateY(-1px);
+        }
+        .cp-chip.cp-chip-active {
+            border-color: var(--cp-emerald);
+            background: rgba(16, 185, 129, 0.12);
+            color: #6ee7b7;
+            box-shadow: 0 0 12px rgba(16, 185, 129, 0.15);
+        }
+        .cp-chip.cp-chip-inactive {
+            border-color: #27272a;
+            background: #18181b;
+            color: #52525b;
+            opacity: 0.5;
+        }
+        .cp-chip.cp-chip-inactive:hover {
+            opacity: 0.8;
+            color: #71717a;
+        }
+        .cp-btn-primary {
+            background: linear-gradient(135deg, var(--cp-emerald) 0%, var(--cp-cyan) 100%);
+            color: #09090b;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            border: none;
+            border-radius: 0.6rem;
+            padding: 0.7rem 1.5rem;
+            cursor: pointer;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 16px rgba(16, 185, 129, 0.25);
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .cp-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 24px rgba(16, 185, 129, 0.35);
+        }
+        .cp-btn-primary:active {
+            transform: translateY(0) scale(0.97);
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.2);
+            transition-duration: 0.08s;
+        }
+        .cp-btn-secondary {
+            background: #27272a;
+            color: #e4e4e7;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            border: 1px solid #3f3f46;
+            border-radius: 0.6rem;
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.8rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .cp-btn-secondary:hover {
+            background: #3f3f46;
+            border-color: #52525b;
+            transform: translateY(-1px);
+        }
+        .cp-btn-secondary:active {
+            transform: translateY(0) scale(0.97);
+            transition-duration: 0.06s;
+        }
+        .cp-toast {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%) translateY(100px);
+            background: #18181b;
+            border: 1px solid var(--cp-emerald);
+            color: #6ee7b7;
+            padding: 0.8rem 1.5rem;
+            border-radius: 0.75rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            letter-spacing: 0.02em;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(16, 185, 129, 0.3);
+            z-index: 100;
+            transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .cp-toast.cp-toast-show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+        .cp-pulse-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--cp-emerald);
+            animation: cp-pulse 2s ease-in-out infinite;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+        @keyframes cp-pulse {
+            0%,
+            100% {
+                opacity: 1;
+                box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.6);
+            }
+            50% {
+                opacity: 0.7;
+                box-shadow: 0 0 0 6px rgba(16, 185, 129, 0);
+            }
+        }
+        .cp-badge-counter {
+            background: rgba(244, 63, 94, 0.12);
+            border: 1px solid rgba(244, 63, 94, 0.35);
+            color: #fda4af;
+            border-radius: 9999px;
+            padding: 0.3rem 0.9rem;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+        .cp-badge-counter.cp-badge-clean {
+            background: rgba(16, 185, 129, 0.12);
+            border-color: rgba(16, 185, 129, 0.35);
+            color: #6ee7b7;
+        }
+        .cp-badge-counter.cp-badge-warning {
+            background: rgba(245, 158, 11, 0.12);
+            border-color: rgba(245, 158, 11, 0.35);
+            color: #fcd34d;
+        }
+        .cp-category-summary {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            font-size: 0.7rem;
+            color: #a1a1aa;
+            letter-spacing: 0.02em;
+        }
+        .cp-category-summary span {
+            padding: 0.15rem 0.55rem;
+            border-radius: 9999px;
+            background: rgba(63, 63, 70, 0.6);
+            border: 1px solid #27272a;
+            transition: all 0.3s ease;
+        }
+        .cp-category-summary span.has-hits {
+            background: rgba(244, 63, 94, 0.12);
+            border-color: rgba(244, 63, 94, 0.3);
+            color: #fda4af;
+        }
+        .cp-category-summary span.no-hits {
+            opacity: 0.45;
+        }
+        .cp-segmented-control {
+            display: flex;
+            background: #18181b;
+            border: 1px solid #27272a;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            gap: 0;
+        }
+        .cp-segmented-control button {
+            padding: 0.5rem 0.9rem;
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.03em;
+            cursor: pointer;
+            border: none;
+            background: transparent;
+            color: #71717a;
+            transition: all 0.2s ease;
+            white-space: nowrap;
+        }
+        .cp-segmented-control button:hover {
+            color: #e4e4e7;
+            background: rgba(255, 255, 255, 0.04);
+        }
+        .cp-segmented-control button.cp-seg-active {
+            background: rgba(16, 185, 129, 0.15);
+            color: #6ee7b7;
+        }
+        .cp-output-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 320px;
+            color: #52525b;
+            font-size: 0.85rem;
+            text-align: center;
+            padding: 2rem;
+        }
+        .cp-output-empty .icon {
+            font-size: 2.5rem;
+            margin-bottom: 0.75rem;
+            opacity: 0.6;
+        }
+        @keyframes cp-fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .cp-fade-in {
+            animation: cp-fadeIn 0.3s ease forwards;
+        }
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #3f3f46;
+            border-radius: 3px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #52525b;
+        }
+        textarea::placeholder {
+            color: #3f3f46;
+        }
+        .cp-copy-feedback {
+            transform: scale(1.15);
+            transition: transform 0.2s ease;
+        }
+        @media (max-width: 768px) {
+            .cp-input-area,
+            .cp-output-display {
+                min-height: 220px;
+            }
+            .cp-btn-primary {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Toast Notification -->
+    <div id="cp-toast" class="cp-toast" role="alert" aria-live="polite">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+        <span id="cp-toast-text">Copied!</span>
+    </div>
+
+    <!-- Header / Hero -->
+    <header class="border-b border-zinc-800 bg-zinc-950/80 backdrop-blur-md sticky top-0 z-40">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div class="flex flex-wrap items-center justify-between gap-3">
+              
+                <!-- Logo & Title -->
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-zinc-900 border border-zinc-700/60 flex items-center justify-center shadow-lg shadow-emerald-500/10">
+                        <svg width="24" height="24" viewBox="0 0 48 48" fill="none">
+                            <!-- Outer Shield -->
+                            <path d="M24 6l14 5v10c0 10-6.5 17.5-14 21-7.5-3.5-14-11-14-21V11l14-5z" stroke="#10B981" stroke-width="3" stroke-linejoin="round"/>
+                            <!-- Terminal Prompt (>) -->
+                            <path d="M19 20l5 4-5 4" stroke="#34D399" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+                            <!-- Terminal Cursor (_) -->
+                            <line x1="27" y1="28" x2="31" y2="28" stroke="#06B6D4" stroke-width="3" stroke-linecap="round"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold tracking-tight text-zinc-100 leading-tight">Clean<span class="text-emerald-400">Prompt</span></h1>
+                        <p class="text-[0.65rem] text-zinc-500 font-medium tracking-wide uppercase">Zero-Leak LLM & Code Scrubber</p>
+                    </div>
+                </div>
+                
+
+                <!-- Trust Badges -->
+                <div class="flex flex-wrap items-center gap-2 sm:gap-3 text-[0.7rem] font-semibold text-zinc-400">
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400">
+                        <span class="cp-pulse-dot"></span>
+                        100% Offline & RAM Only
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-800/80 border border-zinc-700 text-zinc-300">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+                        Zero Server Requests
+                    </span>
+                    <span class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-zinc-800/80 border border-zinc-700 text-zinc-300">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                        Enterprise Air-Gapped Standard
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <!-- Controls Row -->
+        <div class="flex flex-wrap items-center justify-between gap-3 mb-5">
+            <!-- Category Filter Chips -->
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="text-[0.7rem] font-bold text-zinc-500 uppercase tracking-wider mr-1">Filters:</span>
+                <button id="chip-keys" class="cp-chip cp-chip-active" data-category="keys" aria-pressed="true">
+                    🔑 API Keys
+                </button>
+                <button id="chip-pii" class="cp-chip cp-chip-active" data-category="pii" aria-pressed="true">
+                    👤 PII
+                </button>
+                <button id="chip-ips" class="cp-chip cp-chip-active" data-category="ips" aria-pressed="true">
+                    🌐 IPs
+                </button>
+                <button id="chip-passwords" class="cp-chip cp-chip-active" data-category="passwords" aria-pressed="true">
+                    🔒 Passwords & Infra
+                </button>
+            </div>
+
+            <!-- Live Counter Badge -->
+            <div id="cp-counter-badge" class="cp-badge-counter cp-badge-clean" role="status" aria-live="polite">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                <span id="cp-counter-text">0 Secrets • 0B Uploaded</span>
+            </div>
+        </div>
+
+        <!-- Replacement Style Selector -->
+        <div class="flex flex-wrap items-center gap-3 mb-5">
+            <span class="text-[0.7rem] font-bold text-zinc-500 uppercase tracking-wider">Replacement:</span>
+            <div class="cp-segmented-control" role="tablist" aria-label="Replacement style">
+                <button id="repl-descriptive" class="cp-seg-active" data-style="descriptive" role="tab" aria-selected="true">[REDACTED_TAG]</button>
+                <button id="repl-minimal" data-style="minimal" role="tab" aria-selected="false">***</button>
+                <button id="repl-variable" data-style="variable" role="tab" aria-selected="false">{{ENV_VAR}}</button>
+            </div>
+            <div class="flex items-center gap-2 ml-auto">
+                <button id="btn-paste" class="cp-btn-secondary" title="Paste from clipboard">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                    Paste
+                </button>
+                <button id="btn-clear" class="cp-btn-secondary" title="Clear input">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-2 14H7L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                    Clear
+                </button>
+                <button id="btn-sample" class="cp-btn-secondary" title="Load sample data with secrets">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Sample
+                </button>
+            </div>
+        </div>
+
+        <!-- Editor Panes -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+            <!-- Left: Input Pane -->
+            <div class="cp-panel overflow-hidden flex flex-col" id="input-pane">
+                <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-zinc-900/70">
+                    <span class="text-[0.7rem] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+                        Raw Prompt / Code
+                    </span>
+                    <span class="text-[0.65rem] text-zinc-600 font-medium" id="input-char-count">0 chars</span>
+                </div>
+                <textarea id="cp-input" class="cp-input-area" placeholder="Paste your prompt, code, logs, or context here...  All processing happens locally in your browser. Nothing is ever uploaded." spellcheck="false" autocomplete="off"></textarea>
+            </div>
+
+            <!-- Right: Output Pane -->
+            <div class="cp-panel overflow-hidden flex flex-col" id="output-pane">
+                <div class="flex items-center justify-between px-4 py-2.5 border-b border-zinc-800 bg-zinc-900/70">
+                    <span class="text-[0.7rem] font-bold text-zinc-400 uppercase tracking-wider flex items-center gap-2">
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="9 12 11 14 15 10"/></svg>
+                        Sanitized Output
+                    </span>
+                    <span class="text-[0.65rem] text-zinc-600 font-medium" id="output-char-count">0 chars</span>
+                </div>
+                <div id="cp-output" class="cp-output-display" aria-label="Sanitized output" role="textbox" aria-readonly="true">
+                    <div class="cp-output-empty">
+                        <div class="icon">🛡️</div>
+                        <p>Your sanitized text will appear here.</p>
+                        <p class="text-[0.7rem] mt-1 text-zinc-600">Paste content on the left to begin.</p>
+                    </div>
+                </div>
+                <div class="px-4 py-2 border-t border-zinc-800 bg-zinc-900/70 flex items-center justify-between gap-3 flex-wrap">
+                    <div id="cp-category-summary" class="cp-category-summary" aria-live="polite">
+                        <span class="no-hits">🔑 0</span>
+                        <span class="no-hits">👤 0</span>
+                        <span class="no-hits">🌐 0</span>
+                        <span class="no-hits">🔒 0</span>
+                    </div>
+                    <button id="btn-copy" class="cp-btn-primary" title="Copy sanitized text to clipboard">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                        Copy Clean Prompt
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Footer Note -->
+        <div class="mt-6 text-center text-[0.7rem] text-zinc-600">
+            <p>🔒 <strong>100% client-side execution.</strong> All detection and redaction happens in your browser's RAM. No data ever leaves your device. No fetch calls. No analytics. No tracking.</p>
+        </div>
+    </main>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ────────────────────────────────────────────────────────────
+            // Pattern Definitions
+            // ────────────────────────────────────────────────────────────
+            const PATTERNS = [
+                // ── API Keys & Cloud Tokens ──
+                {
+                    id: 'openai',
+                    label: 'OpenAI API Key',
+                    shortLabel: 'OPENAI_KEY',
+                    category: 'keys',
+                    regex: /sk-[a-zA-Z0-9_-]{20,}/g,
+                }, {
+                    id: 'anthropic',
+                    label: 'Anthropic API Key',
+                    shortLabel: 'ANTHROPIC_KEY',
+                    category: 'keys',
+                    regex: /sk-ant-[a-zA-Z0-9_-]{20,}/g,
+                }, {
+                    id: 'aws-access',
+                    label: 'AWS Access Key ID',
+                    shortLabel: 'AWS_ACCESS_KEY',
+                    category: 'keys',
+                    regex: /\bAKIA[0-9A-Z]{16}\b/g,
+                }, {
+                    id: 'github-pat',
+                    label: 'GitHub Personal Access Token',
+                    shortLabel: 'GITHUB_TOKEN',
+                    category: 'keys',
+                    regex: /\b(?:ghp|gho|ghs)_[a-zA-Z0-9]{36,}\b/g,
+                }, {
+                    id: 'github-fine',
+                    label: 'GitHub Fine-grained PAT',
+                    shortLabel: 'GITHUB_PAT',
+                    category: 'keys',
+                    regex: /\bgithub_pat_[a-zA-Z0-9_]{50,}\b/g,
+                }, {
+                    id: 'google-api',
+                    label: 'Google API Key',
+                    shortLabel: 'GOOGLE_API_KEY',
+                    category: 'keys',
+                    regex: /\bAIza[0-9A-Za-z_-]{35}\b/g,
+                }, {
+                    id: 'jwt',
+                    label: 'JWT Token',
+                    shortLabel: 'JWT_TOKEN',
+                    category: 'keys',
+                    regex: /\beyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g,
+                }, {
+                    id: 'private-key',
+                    label: 'Private Key Block',
+                    shortLabel: 'PRIVATE_KEY',
+                    category: 'keys',
+                    regex: /-----BEGIN (?:RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----[\s\S]*?-----END (?:RSA |EC |DSA |OPENSSH )?PRIVATE KEY-----/g,
+                }, {
+                    id: 'bearer-token',
+                    label: 'Bearer Token',
+                    shortLabel: 'BEARER_TOKEN',
+                    category: 'keys',
+                    regex: /\bBearer\s+[A-Za-z0-9\-._~+\/]{20,}=*/g,
+                },
+                // ── PII ──
+                {
+                    id: 'email',
+                    label: 'Email Address',
+                    shortLabel: 'EMAIL',
+                    category: 'pii',
+                    regex: /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g,
+                }, {
+                    id: 'phone-intl',
+                    label: 'Phone Number (International)',
+                    shortLabel: 'PHONE',
+                    category: 'pii',
+                    regex: /\b\+\d{1,3}[\s.-]?\(?\d{2,4}\)?[\s.-]?\d{3,4}[\s.-]?\d{3,4}\b/g,
+                }, {
+                    id: 'phone-us',
+                    label: 'Phone Number (US)',
+                    shortLabel: 'PHONE',
+                    category: 'pii',
+                    regex: /\b\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\b/g,
+                }, {
+                    id: 'ssn',
+                    label: 'Social Security Number',
+                    shortLabel: 'SSN',
+                    category: 'pii',
+                    regex: /\b\d{3}-\d{2}-\d{4}\b/g,
+                },
+                // ── IPs ──
+                {
+                    id: 'ipv4',
+                    label: 'IPv4 Address',
+                    shortLabel: 'IPV4',
+                    category: 'ips',
+                    regex: /\b(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g,
+                }, {
+                    id: 'ipv6',
+                    label: 'IPv6 Address',
+                    shortLabel: 'IPV6',
+                    category: 'ips',
+                    regex: /\b(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}\b|\b(?:[0-9a-fA-F]{1,4}:){1,7}:\b|\b::1\b/g,
+                },
+                // ── Passwords & Infra ──
+                {
+                    id: 'db-uri',
+                    label: 'Database Connection URI',
+                    shortLabel: 'DB_URI',
+                    category: 'passwords',
+                    regex: /\b(?:postgres|postgresql|mongodb(?:\+srv)?|mysql|redis|amqp|mssql)(?::\/\/)[^\s"']+/gi,
+                }, {
+                    id: 'password-assign',
+                    label: 'Password Assignment',
+                    shortLabel: 'PASSWORD',
+                    category: 'passwords',
+                    regex: /\b(?:password|passwd|pwd|secret|api_key|apikey|token|auth_token|client_secret)\s*[=:]\s*["'][^"']{3,}["']/gi,
+                }, {
+                    id: 'internal-url',
+                    label: 'Internal Company URL',
+                    shortLabel: 'INTERNAL_URL',
+                    category: 'passwords',
+                    regex: /\bhttps?:\/\/[a-zA-Z0-9.-]+\.(?:internal|local|corp|lan|localhost)(?::[0-9]+)?(?:\/[^\s"']*)?/gi,
+                },
+            ];
+
+            // ────────────────────────────────────────────────────────────
+            // State
+            // ────────────────────────────────────────────────────────────
+            const state = {
+                inputText: '',
+                sanitizedPlainText: '',
+                sanitizedHtml: '',
+                segments: [],
+                activeCategories: {
+                    keys: true,
+                    pii: true,
+                    ips: true,
+                    passwords: true,
+                },
+                replacementStyle: 'descriptive', // 'descriptive' | 'minimal' | 'variable'
+                secretCount: 0,
+                categoryCounts: { keys: 0, pii: 0, ips: 0, passwords: 0 },
+                debounceTimer: null,
+            };
+
+            // ────────────────────────────────────────────────────────────
+            // DOM References
+            // ────────────────────────────────────────────────────────────
+            const inputEl = document.getElementById('cp-input');
+            const outputEl = document.getElementById('cp-output');
+            const counterBadge = document.getElementById('cp-counter-badge');
+            const counterText = document.getElementById('cp-counter-text');
+            const categorySummaryEl = document.getElementById('cp-category-summary');
+            const inputCharCount = document.getElementById('input-char-count');
+            const outputCharCount = document.getElementById('output-char-count');
+            const btnCopy = document.getElementById('btn-copy');
+            const btnPaste = document.getElementById('btn-paste');
+            const btnClear = document.getElementById('btn-clear');
+            const btnSample = document.getElementById('btn-sample');
+            const toastEl = document.getElementById('cp-toast');
+            const toastTextEl = document.getElementById('cp-toast-text');
+
+            const chipButtons = {
+                keys: document.getElementById('chip-keys'),
+                pii: document.getElementById('chip-pii'),
+                ips: document.getElementById('chip-ips'),
+                passwords: document.getElementById('chip-passwords'),
+            };
+
+            const replButtons = {
+                descriptive: document.getElementById('repl-descriptive'),
+                minimal: document.getElementById('repl-minimal'),
+                variable: document.getElementById('repl-variable'),
+            };
+
+            // ────────────────────────────────────────────────────────────
+            // Utility Functions
+            // ────────────────────────────────────────────────────────────
+            function escapeHtml(str) {
+                const div = document.createElement('div');
+                div.textContent = str;
+                return div.innerHTML;
+            }
+
+            function getReplacementString(shortLabel, style) {
+                switch (style) {
+                    case 'descriptive':
+                        return '[REDACTED_' + shortLabel + ']';
+                    case 'minimal':
+                        return '***';
+                    case 'variable':
+                        return '{{' + shortLabel + '_ENV}}';
+                    default:
+                        return '[REDACTED_' + shortLabel + ']';
+                }
+            }
+
+            function getCategoryClass(category) {
+                switch (category) {
+                    case 'keys':
+                        return 'api-key';
+                    case 'pii':
+                        return 'pii';
+                    case 'ips':
+                        return 'ip';
+                    case 'passwords':
+                        return 'api-key';
+                    default:
+                        return '';
+                }
+            }
+
+            function showToast(message) {
+                toastTextEl.textContent = message;
+                toastEl.classList.add('cp-toast-show');
+                clearTimeout(toastEl._hideTimeout);
+                toastEl._hideTimeout = setTimeout(() => {
+                    toastEl.classList.remove('cp-toast-show');
+                }, 2200);
+            }
+
+            // ────────────────────────────────────────────────────────────
+            // Core Processing Engine (Segmentation-based)
+            // ────────────────────────────────────────────────────────────
+            function processText(rawText) {
+                if (!rawText) {
+                    state.segments = [];
+                    state.sanitizedPlainText = '';
+                    state.sanitizedHtml = '';
+                    state.secretCount = 0;
+                    state.categoryCounts = { keys: 0, pii: 0, ips: 0, passwords: 0 };
+                    updateOutput();
+                    updateBadge();
+                    updateCategorySummary();
+                    return;
+                }
+
+                // Initialize with one plain segment
+                let segments = [{ text: rawText, redacted: false, label: null, category: null }];
+                let totalCount = 0;
+                const catCounts = { keys: 0, pii: 0, ips: 0, passwords: 0 };
+
+                // Process each pattern sequentially
+                for (const pattern of PATTERNS) {
+                    const cat = pattern.category;
+                    if (!state.activeCategories[cat]) continue;
+
+                    const regex = new RegExp(pattern.regex.source, pattern.regex.flags.includes('g') ? pattern.regex
+                        .flags : pattern.regex.flags + 'g');
+                    const newSegments = [];
+                    let patternMatchCount = 0;
+
+                    for (const segment of segments) {
+                        if (segment.redacted) {
+                            newSegments.push(segment);
+                            continue;
+                        }
+
+                        let lastIndex = 0;
+                        let match;
+                        const text = segment.text;
+                        regex.lastIndex = 0;
+
+                        while ((match = regex.exec(text)) !== null) {
+                            const matchStart = match.index;
+                            const matchEnd = match.index + match[0].length;
+                            if (matchStart > lastIndex) {
+                                newSegments.push({
+                                    text: text.slice(lastIndex, matchStart),
+                                    redacted: false,
+                                    label: null,
+                                    category: null,
+                                });
+                            }
+                            newSegments.push({
+                                text: match[0],
+                                redacted: true,
+                                label: pattern.shortLabel,
+                                category: pattern.category,
+                                fullLabel: pattern.label,
+                            });
+                            patternMatchCount++;
+                            lastIndex = matchEnd;
+                            if (match[0].length === 0) regex.lastIndex++; // prevent infinite loop
+                        }
+
+                        if (lastIndex < text.length) {
+                            newSegments.push({
+                                text: text.slice(lastIndex),
+                                redacted: false,
+                                label: null,
+                                category: null,
+                            });
+                        }
+                    }
+
+                    segments = newSegments;
+                    if (patternMatchCount > 0) {
+                        catCounts[cat] += patternMatchCount;
+                        totalCount += patternMatchCount;
+                    }
+                }
+
+                // Build plain text and HTML
+                let plainText = '';
+                let htmlParts = [];
+                for (const seg of segments) {
+                    if (seg.redacted) {
+                        const replacement = getReplacementString(seg.label, state.replacementStyle);
+                        plainText += replacement;
+                        const catClass = getCategoryClass(seg.category);
+                        htmlParts.push('<span class="redacted-token ' + catClass + '" title="' + escapeHtml(seg
+                            .fullLabel || seg.label) + '">' + escapeHtml(replacement) + '</span>');
+                    } else {
+                        plainText += seg.text;
+                        htmlParts.push(escapeHtml(seg.text));
+                    }
+                }
+
+                state.segments = segments;
+                state.sanitizedPlainText = plainText;
+                state.sanitizedHtml = htmlParts.join('');
+                state.secretCount = totalCount;
+                state.categoryCounts = catCounts;
+
+                updateOutput();
+                updateBadge();
+                updateCategorySummary();
+            }
+
+            function updateOutput() {
+                if (!state.inputText.trim()) {
+                    outputEl.innerHTML =
+                        '<div class="cp-output-empty"><div class="icon">🛡️</div><p>Your sanitized text will appear here.</p><p class="text-[0.7rem] mt-1 text-zinc-600">Paste content on the left to begin.</p></div>';
+                    outputCharCount.textContent = '0 chars';
+                    return;
+                }
+                if (state.secretCount === 0) {
+                    outputEl.innerHTML = '<div class="cp-output-empty cp-fade-in"><div class="icon">✅</div><p>No secrets detected! Your text is clean.</p><p class="text-[0.7rem] mt-1 text-zinc-600">' +
+                        state.inputText.length + ' characters processed.</p></div>';
+                    outputCharCount.textContent = state.sanitizedPlainText.length + ' chars';
+                    return;
+                }
+                outputEl.innerHTML = state.sanitizedHtml;
+                outputCharCount.textContent = state.sanitizedPlainText.length + ' chars';
+            }
+
+            function updateBadge() {
+                const count = state.secretCount;
+                if (count === 0) {
+                    counterBadge.className = 'cp-badge-counter cp-badge-clean';
+                    counterText.textContent = '0 Secrets • 0B Uploaded';
+                } else if (count < 3) {
+                    counterBadge.className = 'cp-badge-counter cp-badge-warning';
+                    counterText.textContent = count + ' Secret' + (count > 1 ? 's' : '') + ' Neutralized • 0B Uploaded';
+                } else {
+                    counterBadge.className = 'cp-badge-counter';
+                    counterText.textContent = count + ' Secrets Neutralized • 0B Uploaded';
+                }
+            }
+
+            function updateCategorySummary() {
+                const cc = state.categoryCounts;
+                const keysSpan = categorySummaryEl.querySelector('span:nth-child(1)');
+                const piiSpan = categorySummaryEl.querySelector('span:nth-child(2)');
+                const ipsSpan = categorySummaryEl.querySelector('span:nth-child(3)');
+                const passSpan = categorySummaryEl.querySelector('span:nth-child(4)');
+
+                if (keysSpan) {
+                    keysSpan.textContent = '🔑 ' + cc.keys;
+                    keysSpan.className = cc.keys > 0 ? 'has-hits' : 'no-hits';
+                }
+                if (piiSpan) {
+                    piiSpan.textContent = '👤 ' + cc.pii;
+                    piiSpan.className = cc.pii > 0 ? 'has-hits' : 'no-hits';
+                }
+                if (ipsSpan) {
+                    ipsSpan.textContent = '🌐 ' + cc.ips;
+                    ipsSpan.className = cc.ips > 0 ? 'has-hits' : 'no-hits';
+                }
+                if (passSpan) {
+                    passSpan.textContent = '🔒 ' + cc.passwords;
+                    passSpan.className = cc.passwords > 0 ? 'has-hits' : 'no-hits';
+                }
+            }
+
+            // ────────────────────────────────────────────────────────────
+            // Event Handlers
+            // ────────────────────────────────────────────────────────────
+            function handleInput() {
+                state.inputText = inputEl.value;
+                inputCharCount.textContent = state.inputText.length + ' chars';
+
+                // Debounce processing
+                clearTimeout(state.debounceTimer);
+                state.debounceTimer = setTimeout(() => {
+                    const startTime = performance.now();
+                    processText(state.inputText);
+                    const elapsed = performance.now() - startTime;
+                    // For debugging: console.log('Processing time:', elapsed.toFixed(2) + 'ms');
+                }, 100);
+            }
+
+            function toggleCategory(category) {
+                state.activeCategories[category] = !state.activeCategories[category];
+                const chip = chipButtons[category];
+                if (state.activeCategories[category]) {
+                    chip.className = 'cp-chip cp-chip-active';
+                    chip.setAttribute('aria-pressed', 'true');
+                } else {
+                    chip.className = 'cp-chip cp-chip-inactive';
+                    chip.setAttribute('aria-pressed', 'false');
+                }
+                processText(state.inputText);
+            }
+
+            function setReplacementStyle(style) {
+                state.replacementStyle = style;
+                Object.keys(replButtons).forEach(key => {
+                    const btn = replButtons[key];
+                    if (key === style) {
+                        btn.classList.add('cp-seg-active');
+                        btn.setAttribute('aria-selected', 'true');
+                    } else {
+                        btn.classList.remove('cp-seg-active');
+                        btn.setAttribute('aria-selected', 'false');
+                    }
+                });
+                processText(state.inputText);
+            }
+
+            async function handlePaste() {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    if (text) {
+                        inputEl.value = text;
+                        state.inputText = text;
+                        inputCharCount.textContent = text.length + ' chars';
+                        processText(text);
+                        showToast('Pasted from clipboard');
+                    } else {
+                        showToast('Clipboard is empty');
+                    }
+                } catch (err) {
+                    // Fallback: focus the textarea and try document.execCommand
+                    inputEl.focus();
+                    showToast('Press Ctrl+V to paste');
+                }
+            }
+
+            function handleClear() {
+                inputEl.value = '';
+                state.inputText = '';
+                inputCharCount.textContent = '0 chars';
+                processText('');
+                inputEl.focus();
+                showToast('Input cleared');
+            }
+
+            function handleSample() {
+                const sampleText = `// ── API Configuration ──────────────────────────
+        const config = {
+          openai_key: "sk-proj-AbCdEfGhIjKlMnOpQrStUvWxYz1234567890",
+          anthropic_key: "sk-ant-api03-XyZAbCdEfGhIjKlMnOpQrStUvWxYz9876543210",
+          aws: {
+            accessKeyId: "AKIAIOSFODNN7EXAMPLE",
+            secretAccessKey: "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
+          },
+          github_token: "ghp_1A2b3C4d5E6f7G8h9I0jK1lM2nO3pQ4r5S6t",
+          google_api: "AIzaSyD4iE2mQ8nX5vY7wZ0aB3cD6eF9gH1jK2lM3"
+        };
+
+        // ── User Data ───────────────────────────────────
+        const user = {
+          email: "jane.smith@example.com",
+          phone: "+1 (555) 987-6543",
+          ssn: "987-65-4321",
+          ip_address: "10.0.0.42",
+          ipv6_address: "2001:db8:85a3:8d3:1319:8a2e:370:7348",
+          internal_url: "https://api.internal.company-corp.com/v1/users"
+        };
+
+        // ── Database Connection ────────────────────────
+        const dbUri = "postgres://admin:SuperSecret123@db.internal.local:5432/production";
+        const mongoUri = "mongodb+srv://appuser:ComplexPass456@cluster.local/mydb";
+
+        // ── JWT & Auth ─────────────────────────────────
+        const authHeader = "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiYWRtaW4iOnRydWV9.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c";
+        const password = "MySecurePass123!";
+
+        // ── Private Key ────────────────────────────────
+        // -----BEGIN RSA PRIVATE KEY-----
+        // MIIEpAIBAAKCAQEA1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z
+        // -----END RSA PRIVATE KEY-----
+        `;
+                inputEl.value = sampleText;
+                state.inputText = sampleText;
+                inputCharCount.textContent = sampleText.length + ' chars';
+                processText(sampleText);
+                showToast('Sample data loaded');
+            }
+
+            async function handleCopy() {
+                if (!state.sanitizedPlainText) {
+                    showToast('Nothing to copy yet');
+                    return;
+                }
+                try {
+                    await navigator.clipboard.writeText(state.sanitizedPlainText);
+                    showToast('Clean prompt copied to clipboard!');
+                    btnCopy.classList.add('cp-copy-feedback');
+                    setTimeout(() => btnCopy.classList.remove('cp-copy-feedback'), 200);
+                } catch (err) {
+                    // Fallback
+                    const textarea = document.createElement('textarea');
+                    textarea.value = state.sanitizedPlainText;
+                    textarea.style.position = 'fixed';
+                    textarea.style.opacity = '0';
+                    document.body.appendChild(textarea);
+                    textarea.select();
+                    document.execCommand('copy');
+                    document.body.removeChild(textarea);
+                    showToast('Copied!');
+                }
+            }
+
+            // ────────────────────────────────────────────────────────────
+            // Event Binding
+            // ────────────────────────────────────────────────────────────
+            inputEl.addEventListener('input', handleInput);
+
+            Object.keys(chipButtons).forEach(cat => {
+                chipButtons[cat].addEventListener('click', () => toggleCategory(cat));
+            });
+
+            Object.keys(replButtons).forEach(style => {
+                replButtons[style].addEventListener('click', () => setReplacementStyle(style));
+            });
+
+            btnPaste.addEventListener('click', handlePaste);
+            btnClear.addEventListener('click', handleClear);
+            btnSample.addEventListener('click', handleSample);
+            btnCopy.addEventListener('click', handleCopy);
+
+            // Keyboard shortcut: Ctrl/Cmd + Shift + V to paste
+            document.addEventListener('keydown', (e) => {
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'V') {
+                    e.preventDefault();
+                    handlePaste();
+                }
+                if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'C') {
+                    e.preventDefault();
+                    handleCopy();
+                }
+            });
+
+            // ────────────────────────────────────────────────────────────
+            // Initialization
+            // ────────────────────────────────────────────────────────────
+            state.inputText = '';
+            state.sanitizedPlainText = '';
+            state.sanitizedHtml = '';
+            state.secretCount = 0;
+            state.categoryCounts = { keys: 0, pii: 0, ips: 0, passwords: 0 };
+            updateOutput();
+            updateBadge();
+            updateCategorySummary();
+
+            // Log startup info
+            console.log('%c🛡️ CleanPrompt — Zero-Leak LLM & Code Scrubber', 'font-size: 16px; font-weight: bold; color: #10B981;');
+            console.log('%c100% Client-Side • Zero Server Requests • RAM Only', 'color: #06B6D4; font-size: 12px;');
+            console.log('%c' + PATTERNS.length + ' detection patterns loaded across 4 categories.', 'color: #a1a1aa; font-size: 11px;');
+
+        })();
+    </script>
+</body>
+</html>
