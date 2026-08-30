@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://cleanpdf-with-sanitizing.pages.dev/sitemap.xml
